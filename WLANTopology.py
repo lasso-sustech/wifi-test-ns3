@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
-from ns.core import StringValue, BooleanValue
-from ns.mobility import MobilityHelper
+#https://www.nsnam.org/docs/models/html/wifi-user.html
+
+from ns.core import (StringValue, BooleanValue, UintegerValue)
+from ns.internet import InternetStackHelper, Ipv4AddressHelper
+from ns.network import Ipv4Address, Ipv4Mask
+# from ns.mobility import MobilityHelper
+
 from ns.wifi import (WIFI_STANDARD_80211n, WIFI_STANDARD_80211ac, WIFI_STANDARD_80211ax)
 from ns.wifi import YansWifiPhyHelper, YansWifiChannelHelper
-from ns.wifi import WifiMacHelper, SsidValue
+from ns.wifi import WifiMacHelper, Ssid, SsidValue
 from ns.wifi import WifiHelper
 
+global GROUP_INDEX
+GROUP_INDEX = 1
 GLOBAL_PHY = dict()
 CHANNEL_MAP = {
     '2.4GHz': {
@@ -29,30 +36,30 @@ def get_wifi_phy(freq, bw, channel):
     assert( freq in ['2.4GHz', '5GHz', '6GHz'] )
     assert( channel in CHANNEL_MAP[freq][bw] )
     ##
-    freq = {'2.4GHz':'2_4_GHZ', '5GHz':'5GHZ', '6GHz':'6GHZ'}[freq]
+    freq = {'2.4GHz':'2_4GHZ', '5GHz':'5GHZ', '6GHz':'6GHZ'}[freq]
     freq_name = f'BAND_{freq}'
-    phy_name  = f'{{{channel}, {bw}, {freq_name}, 0}}'
+    phy_name  = f'{{{channel}, 0, {freq_name}, 0}}'
     ##
     if phy_name in GLOBAL_PHY:
         wifiPhy = None
     else:
         wifiPhy = YansWifiPhyHelper()
-        wifiPhy.Set('Antennas', 2)
-        wifiPhy.Set('MaxSupportedTxSpatialStreams', 2)
-        wifiPhy.Set('MaxSupportedRxSpatialStreams', 2)
-        #
-        wifiChannel = YansWifiChannelHelper.Default()
-        wifiChannel.SetAttribute('ChannelSettings',
-            StringValue( phy_name ))
+        wifiPhy.Set('Antennas', UintegerValue(2))
+        wifiPhy.Set('MaxSupportedTxSpatialStreams', UintegerValue(2))
+        wifiPhy.Set('MaxSupportedRxSpatialStreams', UintegerValue(2))
+        wifiPhy.Set('ChannelSettings', StringValue(phy_name) )
         #
         GLOBAL_PHY[phy_name] = wifiPhy
+        wifiChannel = YansWifiChannelHelper.Default()
         wifiPhy.SetChannel( wifiChannel.Create() )
     return wifiPhy
 
 class WLANTopology:
     def __init__(self, standard='80211n', freq='2.4GHz', channel=1, bw=20):
-        assert( standard in ['80211n', '80211ac', '80211ax'] )
+        global GROUP_INDEX
+        assert( standard in ['80211n', '80211a', '80211ac', '80211ax'] )
         assert( standard=='80211ax' if freq=='6GHz' else True )
+        assert( freq=='5GHz' if standard=='80211a' else True )
         ##
         _standard = {
             '80211n' : WIFI_STANDARD_80211n,
@@ -61,7 +68,29 @@ class WLANTopology:
         }[standard]
         self.wifi = WifiHelper()
         self.wifi.SetStandard(_standard)
+        ##
+        self.id = GROUP_INDEX
+        GROUP_INDEX += 1
+        ##
+        self.nodes = list()
+        self.devs = list()
         pass
+
+    def install_stacks(self):
+        stack = InternetStackHelper()
+        [ stack.Install(nd) for nd in self.nodes ]
+        ##
+        _id = self.id
+        self.ifaces = list()
+
+        address = Ipv4AddressHelper()
+        address.SetBase(
+            Ipv4Address(f'10.1.{_id}.0'), Ipv4Mask('255.255.255.0') )
+        for dev in self.devs:
+            self.ifaces.append( address.Assign(dev) )
+        [ address.Assign(dev) for dev in self.devs ]
+        pass
+
     pass
 
 class BSSContainer(WLANTopology):
@@ -72,15 +101,22 @@ class BSSContainer(WLANTopology):
         wifiPhy = get_wifi_phy(freq, bw, channel)
         wifiMac = WifiMacHelper()
         #
-        wifiMac.SetType( 'ns:ApWifiMac', 'Ssid', SsidValue(ssid) )
+        wifiMac.SetType( 'ns3::ApWifiMac', 'Ssid', SsidValue(Ssid(ssid)),
+            'QosSupported', BooleanValue (True) )
         self.ap_node = ap_node
         self.ap_dev  = self.wifi.Install(wifiPhy, wifiMac, ap_node)
         #
-        wifiMac.SetType( 'ns:StaWifiMac', 'Ssid', SsidValue(ssid),
+        wifiMac.SetType( 'ns3::StaWifiMac', 'Ssid', SsidValue(Ssid(ssid)),
             'ActiveProbing', BooleanValue(False) )
         self.sta_nodes = sta_nodes
         self.sta_devs = self.wifi.Install(wifiPhy, wifiMac, sta_nodes)
+        ##
+        self.nodes = [self.ap_node, self.sta_nodes]
+        self.devs  = [self.ap_dev, self.sta_devs]
+        self.install_stacks()
+        self.ap_iface, self.sta_ifaces = self.ifaces
         pass
+
     pass
 
 class P2PContainer(WLANTopology):

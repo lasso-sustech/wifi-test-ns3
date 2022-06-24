@@ -3,6 +3,7 @@ import sys
 from ns.core import CommandLine, Config
 from ns.core import StringValue, Seconds
 from ns.core import Simulator
+import visualizer
 
 from ns.network import NodeContainer
 from WLANTopology import BSSContainer
@@ -20,11 +21,13 @@ def build():
     pass
 
 def run():
+    visualizer.start()
+    ##
     # Simulator.Schedule( Seconds(1.0) )
     # Simulator.stop( Seconds(44.0) )
-    ##
-    Simulator.Run()
-    Simulator.Destroy()
+    # #
+    # Simulator.Run()
+    # Simulator.Destroy()
     pass
 
 if __name__=='__main__':

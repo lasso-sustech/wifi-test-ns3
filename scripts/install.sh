@@ -16,13 +16,13 @@ sudo apt install gsl-bin libgsl-dev libgslcblas0 -y
 
 ## prepare Bake.py and envrionment variables
 mkdir -p $HOME/build
-git clone https://gitlab.com/nsnam/bake $HOME/build --depth=1
+git clone https://gitlab.com/nsnam/bake $HOME/build/bake --depth=1
 cp .ns3-bake.sh $HOME
 source $HOME/.ns3-bake.sh
 
 ## build ns3 with Bake.py
-$BAKE_HOME/bake.py check
-$BAKE_HOME/bake.py configure -e ns-3.36.1
+cd $BAKE_HOME && $BAKE_HOME/bake.py check
+cd $BAKE_HOME && $BAKE_HOME/bake.py configure -e ns-3.36.1
 cd $BAKE_HOME && bake.py download
 # build ns3 with python-bindings enabled
 $NS3_HOME/ns3 configure --enable-examples --enable-tests --enable-python-bindings --build-profile=optimized

@@ -20,10 +20,11 @@ git clone https://gitlab.com/nsnam/bake $HOME/build/bake --depth=1
 cp .ns3-bake.sh $HOME
 source $HOME/.ns3-bake.sh
 
-## build ns3 with Bake.py
+## download ns3 with Bake.py
 cd $BAKE_HOME && $BAKE_HOME/bake.py check
 cd $BAKE_HOME && $BAKE_HOME/bake.py configure -e ns-3.36.1
 cd $BAKE_HOME && bake.py download
+# $BAKE_HOME/bake.py build -j$JOBS
 # build ns3 with python-bindings enabled
 $NS3_HOME/ns3 configure --enable-examples --enable-tests --enable-python-bindings --build-profile=optimized
-$BAKE_HOME/bake.py build -j$JOBS
+$NS3_HOME/ns3 build -j$JOBS

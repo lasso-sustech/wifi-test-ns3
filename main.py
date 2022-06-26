@@ -17,7 +17,7 @@ def build():
     ap_node = NodeContainer(); ap_node.Create(1)
     sta_nodes = NodeContainer(); sta_nodes.Create(2)
     BSSContainer('test-ap', ap_node, sta_nodes,
-        standard='80211n', freq='2.4GHz', channel=1, bw=20)
+        standard='80211n', freq='2.4GHz', mcs='HtMcs7', channel=1, bw=20)
     pass
 
 def run():

@@ -112,7 +112,6 @@ class WLANTopology:
             Ipv4Address(f'10.1.{_id}.0'), Ipv4Mask('255.255.255.0') )
         for dev in self.devs:
             self.ifaces.append( address.Assign(dev) )
-        [ address.Assign(dev) for dev in self.devs ]
         pass
 
     pass

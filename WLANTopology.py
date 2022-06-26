@@ -7,7 +7,7 @@ from ns.network import Ipv4Address, Ipv4Mask
 # from ns.mobility import MobilityHelper
 
 from ns.wifi import (WIFI_STANDARD_80211n, WIFI_STANDARD_80211a, WIFI_STANDARD_80211ac, WIFI_STANDARD_80211ax)
-from ns.wifi import YansWifiPhyHelper, YansWifiChannelHelper
+from ns.wifi import (YansWifiPhyHelper, YansWifiChannelHelper)
 from ns.wifi import WifiMacHelper, Ssid, SsidValue
 from ns.wifi import WifiHelper
 
@@ -64,11 +64,13 @@ def get_wifi_phy(freq, bw, channel):
         #
         GLOBAL_PHY[phy_name] = wifiPhy
         wifiChannel = YansWifiChannelHelper.Default()
+        wifiChannel.SetPropagationDelay('ns3::ConstantSpeedPropagationDelayModel')
+        wifiChannel.AddPropagationLoss('ns3::LogDistancePropagationLossModel')
         wifiPhy.SetChannel( wifiChannel.Create() )
     return wifiPhy
 
 class WLANTopology:
-    def __init__(self, standard, freq, mcs, channel=1, bw=20):
+    def __init__(self, standard, freq, mcs, channel, bw):
         global GROUP_INDEX
         assert( standard in ['80211n', '80211a', '80211ac', '80211ax'] )
         assert( standard=='80211ax' if freq=='6GHz' else True )

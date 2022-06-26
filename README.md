@@ -1,5 +1,5 @@
 # NS3-based Wi-Fi Test
-> NS3-based Indoor WLAN test with various applications, developed with Python bindings front-end.
+NS3-based Indoor WLAN test with various applications, developed with Python bindings front-end.
 
 ### Preparation
 
@@ -12,7 +12,7 @@
 ### Development
 
 1. Define your custom application, network, and etc. resembling the `$NS3_HOME/src` folder structure in `$PWD/src`;
-  > Don't forget to also modify the CMakeLists.txt file.
+    > Don't forget to also modify the CMakeLists.txt file.
 
 2. Define the simulation process in the Python files, e.g. `main.py`;
 

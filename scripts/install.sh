@@ -1,8 +1,7 @@
 #!/usr/bin/bash
-
+NS3=ns-3.36.1
 CPU_CORES=`grep -c ^processor /proc/cpuinfo`
 JOBS=$(( $CPU_CORES - 2 ))
-echo 
 
 ## https://www.nsnam.org/wiki/Installation
 # Install "NS3 Python API" dependencies
@@ -17,12 +16,22 @@ sudo apt install gsl-bin libgsl-dev libgslcblas0 -y
 ## prepare Bake.py and envrionment variables
 mkdir -p $HOME/build
 git clone https://gitlab.com/nsnam/bake $HOME/build/bake --depth=1
-cp .ns3-bake.sh $HOME
+##
+echo '''
+export BAKE_HOME=$HOME/build/bake
+export PATH=$PATH:$BAKE_HOME
+export PYTHONPATH=$PYTHONPATH:$BAKE_HOME
+''' > $HOME/.ns3-bake.sh
+echo 'export NS3_HOME=$BAKE_HOME/source/${NS3}' >> $HOME/.ns3-bake.sh
+echo '''export PATH=$PATH:$NS3_HOME
+export PYTHONPATH=$PYTHONPATH:$NS3_HOME/build/bindings/python
+''' >> $HOME/.ns3-bake.sh
+##
 source $HOME/.ns3-bake.sh
 
 ## download ns3 with Bake.py
 cd $BAKE_HOME && $BAKE_HOME/bake.py check
-cd $BAKE_HOME && $BAKE_HOME/bake.py configure -e ns-3.36.1
+cd $BAKE_HOME && $BAKE_HOME/bake.py configure -e ${NS3}
 cd $BAKE_HOME && bake.py download
 # $BAKE_HOME/bake.py build -j$JOBS
 # build ns3 with python-bindings enabled

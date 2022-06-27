@@ -5,8 +5,8 @@ JOBS=$(( $CPU_CORES - 2 ))
 
 ## https://www.nsnam.org/wiki/Installation
 # Install "NS3 Python API" dependencies
-sudo apt install git g++ python3 python3-dev pkg-config python3-setuptools sqlite3 libsqlite3-dev cmake -y
-python3 -m pip install cxxfilt
+sudo apt install git g++ python3 python3-dev python3-pip pkg-config python3-setuptools sqlite3 libsqlite3-dev llvm-dev cmake libclang-dev libdpdk-dev -y
+python3 -m pip install cxxfilt psutil distro
 # Install "ns-3-pyviz visualizer" dependencies
 sudo apt install gir1.2-goocanvas-2.0 python3-gi python3-gi-cairo python3-pygraphviz gir1.2-gtk-3.0 ipython3 -y
 # Install "bake build tool" dependencies
@@ -28,6 +28,7 @@ echo '''export PATH=$PATH:$NS3_HOME
 export PYTHONPATH=$PYTHONPATH:$NS3_HOME/build/bindings/python
 ''' >> $HOME/.ns3-bake.sh
 ##
+echo 'export PATH='$BAKE_HOME/'build/bin:$PATH' >> $HOME/.ns3-bake.sh
 echo 'export LD_LIBRARY_PATH='$BAKE_HOME/'build/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}' >> $HOME/.ns3-bake.sh
 echo 'export PYTHONPATH='$BAKE_HOME/'build/lib${PYTHONPATH:+:$PYTHONPATH}' >> $HOME/.ns3-bake.sh
 ##

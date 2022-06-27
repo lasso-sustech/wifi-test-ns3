@@ -3,7 +3,9 @@ NS3-based Indoor WLAN test with various applications, developed with Python bind
 
 ### Preparation
 
-- Install NS3 and the dependencies via one step: `make install-ns3`.
+- Ubuntu 20.04 or above.
+
+- Install NS3 and the dependencies in one step: `make install-ns3`.
 
 - You can customize the installation in `scripts/install.sh` script.
 

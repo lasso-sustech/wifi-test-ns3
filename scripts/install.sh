@@ -5,7 +5,7 @@ JOBS=$(( $CPU_CORES - 2 ))
 
 ## https://www.nsnam.org/wiki/Installation
 # Install "NS3 Python API" dependencies
-sudo apt install git g++ python3 python3-dev python3-pip pkg-config python3-setuptools sqlite3 libsqlite3-dev llvm-dev cmake libclang-dev libdpdk-dev -y
+sudo apt install git g++ python3 python3-dev python3-pip pkg-config python3-setuptools sqlite3 libsqlite3-dev llvm-dev cmake ninja-build libclang-dev libdpdk-dev -y
 python3 -m pip install cxxfilt psutil distro
 # Install "ns-3-pyviz visualizer" dependencies
 sudo apt install gir1.2-goocanvas-2.0 python3-gi python3-gi-cairo python3-pygraphviz gir1.2-gtk-3.0 ipython3 -y

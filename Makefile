@@ -5,7 +5,8 @@ install-ns3:
 	@cd scripts; bash install.sh
 
 build:
-	@cd scripts; bash build.sh
+	@cd scripts; ./build.py --full
 
-run:build
-	@python3 main.py
+fast-build:
+	@cd scripts; ./build.py --fast
+

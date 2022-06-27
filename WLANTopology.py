@@ -51,7 +51,7 @@ def get_wifi_phy(freq, bw, channel):
     ##
     freq = {'2.4GHz':'2_4GHZ', '5GHz':'5GHZ', '6GHz':'6GHZ'}[freq]
     freq_name = f'BAND_{freq}'
-    phy_name  = f'{{{channel}, 0, {freq_name}, 0}}'
+    phy_name  = f'{{{channel}, {bw}, {freq_name}, 0}}'
     ##
     if phy_name in GLOBAL_PHY:
         wifiPhy = GLOBAL_PHY[phy_name]

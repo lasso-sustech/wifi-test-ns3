@@ -5,9 +5,9 @@ NS3-based Indoor WLAN test with various applications, developed with Python bind
 
 - Install NS3 and the dependencies via one step: `make install-ns3`.
 
-- We currently use `ns-3.36.1` and the corresponding patches in the `src` folder.
-
 - You can customize the installation in `scripts/install.sh` script.
+
+- We currently use `ns-3.36.1` and the corresponding patches in the `src` folder.
 
 ### Development
 
@@ -16,4 +16,4 @@ NS3-based Indoor WLAN test with various applications, developed with Python bind
 
 2. Define the simulation process in the Python files, e.g. `main.py`;
 
-3. Run the simulation always after running `make build`, or use `make run` without parameters given.
+3. Run the simulation always after running `make build` if you have modified the patches in the `src` folder.

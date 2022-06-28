@@ -6,7 +6,7 @@ from ns.core import Simulator
 import visualizer
 
 from ns.network import NodeContainer
-from WLANTopology import BSSContainer
+from utils.WLANTopology import BSSContainer
 
 def main(args):
     build()
